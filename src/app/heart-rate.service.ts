@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, throttleTime } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,8 @@ export class HeartRateService {
     await characteristic.startNotifications();
     return fromEvent(characteristic, 'characteristicvaluechanged').pipe(
       map((e: any) => e.target.value as DataView),
-      map(dv => dv.getUint8(1))
+      map(dv => dv.getUint8(1)),
+      throttleTime(1000)
     );
   }
 }
