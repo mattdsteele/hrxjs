@@ -1,11 +1,36 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, Observable } from 'rxjs';
-import { map, throttleTime } from 'rxjs/operators';
+import {
+  fromEvent,
+  Observable,
+  interval,
+  BehaviorSubject,
+  Subject
+} from 'rxjs';
+import { map, throttleTime, startWith } from 'rxjs/operators';
+
+export abstract class HeartRateService {
+  abstract connect(): Promise<Observable<number>>;
+}
+@Injectable({
+  providedIn: 'root'
+})
+export class FakeHeartRateService implements HeartRateService {
+  async connect(): Promise<Observable<number>> {
+    const subject = new BehaviorSubject<number>(100);
+    const hr$ = interval(5000).pipe(
+      map(() => {
+        return Math.floor(60 + Math.random() * 90);
+      })
+    );
+    hr$.subscribe(subject);
+    return subject;
+  }
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class HeartRateService {
+export class RealHeartRateService implements HeartRateService {
   constructor() {}
   async connect(): Promise<Observable<number>> {
     const device = await (navigator as any).bluetooth.requestDevice({
