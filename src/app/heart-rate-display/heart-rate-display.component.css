@@ -1,0 +1,15 @@
+.heart-wrapper {
+  text-align: center;
+}
+.heart {
+  font-size: 100px;
+  transition: font-size 100ms ease-in;
+}
+.heart.on {
+  font-size: 150px;
+}
+
+.heart-rate {
+  text-align: center;
+  font-size: 150px;
+}
