@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  fromEvent,
-  Observable,
-  interval,
-  BehaviorSubject,
-  Subject
-} from 'rxjs';
-import { map, throttleTime, startWith } from 'rxjs/operators';
+import { fromEvent, Observable, Subject, timer } from 'rxjs';
+import { map, throttleTime } from 'rxjs/operators';
 
 export abstract class HeartRateService {
   abstract connect(): Promise<Observable<number>>;
@@ -16,8 +10,8 @@ export abstract class HeartRateService {
 })
 export class FakeHeartRateService implements HeartRateService {
   async connect(): Promise<Observable<number>> {
-    const subject = new BehaviorSubject<number>(100);
-    const hr$ = interval(5000).pipe(
+    const subject = new Subject<number>();
+    const hr$ = timer(0, 5000).pipe(
       map(() => {
         return Math.floor(60 + Math.random() * 90);
       })
